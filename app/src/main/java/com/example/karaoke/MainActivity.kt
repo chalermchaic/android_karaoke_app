@@ -1,6 +1,7 @@
 package com.example.karaoke
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         val btnNext = findViewById<Button>(R.id.btn_next_song)
         val btnScan = findViewById<Button>(R.id.btn_scan_files)
         val btnToggleVocal = findViewById<Button>(R.id.btn_toggle_vocal)
+        val btnTestFiles = findViewById<Button>(R.id.btn_test_files)
 
         karaokePlayer = KaraokePlayer(this, playerView)
         playlistManager = PlaylistManager()
@@ -54,6 +56,11 @@ class MainActivity : AppCompatActivity() {
                     android.graphics.Color.parseColor("#F44336")
             )
             Toast.makeText(this, if (isVocalOn) "เปิดเสียงร้อง" else "ปิดเสียงร้อง", Toast.LENGTH_SHORT).show()
+        }
+
+        btnTestFiles.setOnClickListener {
+            val intent = Intent(this, FileTestActivity::class.java)
+            startActivity(intent)
         }
 
         checkPermissionsAndScan()

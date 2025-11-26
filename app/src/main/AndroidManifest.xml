@@ -32,6 +32,12 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".FileTestActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:label="Test Files" />
     </application>
 
 </manifest>
