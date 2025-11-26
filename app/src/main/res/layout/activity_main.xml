@@ -67,6 +67,14 @@
             android:layout_marginTop="8dp"
             android:text="Test Files"
             android:backgroundTint="#FF9800" />
+
+        <Button
+            android:id="@+id/btn_audio_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Audio: Stereo"
+            android:backgroundTint="#2196F3" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

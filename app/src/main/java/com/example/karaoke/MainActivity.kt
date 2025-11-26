@@ -1,11 +1,15 @@
 package com.example.karaoke
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         val btnScan = findViewById<Button>(R.id.btn_scan_files)
         val btnToggleVocal = findViewById<Button>(R.id.btn_toggle_vocal)
         val btnTestFiles = findViewById<Button>(R.id.btn_test_files)
+        val btnAudioChannel = findViewById<Button>(R.id.btn_audio_channel)
 
         karaokePlayer = KaraokePlayer(this, playerView)
         playlistManager = PlaylistManager()
@@ -61,6 +66,10 @@ class MainActivity : AppCompatActivity() {
         btnTestFiles.setOnClickListener {
             val intent = Intent(this, FileTestActivity::class.java)
             startActivity(intent)
+        }
+
+        btnAudioChannel.setOnClickListener {
+            showAudioChannelDialog(btnAudioChannel)
         }
 
         checkPermissionsAndScan()
@@ -93,6 +102,58 @@ class MainActivity : AppCompatActivity() {
     
     private fun updateSongTitle() {
         tvSongTitle.text = karaokePlayer.getCurrentSongTitle()
+    }
+
+    private fun showAudioChannelDialog(btnAudioChannel: Button) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_audio_channel, null)
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.rg_channel_mode)
+
+        // Set current selection
+        val currentMode = karaokePlayer.getCurrentChannelMode()
+        when (currentMode) {
+            KaraokePlayer.AudioChannelMode.STEREO ->
+                radioGroup.check(R.id.rb_stereo)
+            KaraokePlayer.AudioChannelMode.LEFT_ONLY ->
+                radioGroup.check(R.id.rb_left_only)
+            KaraokePlayer.AudioChannelMode.RIGHT_ONLY ->
+                radioGroup.check(R.id.rb_right_only)
+            KaraokePlayer.AudioChannelMode.MONO_MIX ->
+                radioGroup.check(R.id.rb_mono_mix)
+            KaraokePlayer.AudioChannelMode.VOCAL_REMOVER ->
+                radioGroup.check(R.id.rb_vocal_remove)
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        // Change mode immediately when radio button is clicked
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selectedMode = when (checkedId) {
+                R.id.rb_stereo -> KaraokePlayer.AudioChannelMode.STEREO
+                R.id.rb_left_only -> KaraokePlayer.AudioChannelMode.LEFT_ONLY
+                R.id.rb_right_only -> KaraokePlayer.AudioChannelMode.RIGHT_ONLY
+                R.id.rb_mono_mix -> KaraokePlayer.AudioChannelMode.MONO_MIX
+                R.id.rb_vocal_remove -> KaraokePlayer.AudioChannelMode.VOCAL_REMOVER
+                else -> KaraokePlayer.AudioChannelMode.STEREO
+            }
+
+            karaokePlayer.setAudioChannelMode(selectedMode)
+            btnAudioChannel.text = "Audio: ${karaokePlayer.getChannelModeDescription()}"
+
+            Toast.makeText(
+                this,
+                "${karaokePlayer.getChannelModeDescription()}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        // Close button
+        dialogView.findViewById<Button>(R.id.btn_close).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -1,6 +1,7 @@
 package com.example.karaoke
 
 import android.content.Context
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionParameters
@@ -11,10 +12,19 @@ import java.io.File
 
 class KaraokePlayer(private val context: Context, private val playerView: PlayerView) {
 
+    enum class AudioChannelMode {
+        STEREO,           // ทั้ง 2 ช่อง
+        LEFT_ONLY,        // ช่องซ้ายอย่างเดียว
+        RIGHT_ONLY,       // ช่องขวาอย่างเดียว
+        MONO_MIX,         // ผสมเป็น mono
+        VOCAL_REMOVER     // ลดเสียงร้อง
+    }
+
     private var player: ExoPlayer? = null
     private var playlist: List<File> = emptyList()
     private var currentIndex = 0
     private var isVocalOn = true
+    private var currentChannelMode = AudioChannelMode.STEREO
 
     fun initializePlayer() {
         if (player == null) {
@@ -83,6 +93,51 @@ class KaraokePlayer(private val context: Context, private val playerView: Player
     }
 
     fun isVocalEnabled(): Boolean = isVocalOn
+
+    fun setAudioChannelMode(mode: AudioChannelMode) {
+        currentChannelMode = mode
+        player?.let { p ->
+            val audioChannelCount = when (mode) {
+                AudioChannelMode.STEREO -> Int.MAX_VALUE
+                AudioChannelMode.LEFT_ONLY -> 1
+                AudioChannelMode.RIGHT_ONLY -> 1
+                AudioChannelMode.MONO_MIX -> 1
+                AudioChannelMode.VOCAL_REMOVER -> 1
+            }
+
+            val trackSelectionParameters = p.trackSelectionParameters
+                .buildUpon()
+                .setMaxAudioChannelCount(audioChannelCount)
+                .build()
+
+            p.trackSelectionParameters = trackSelectionParameters
+
+            // Update volume for left/right channel selection
+            when (mode) {
+                AudioChannelMode.LEFT_ONLY -> {
+                    p.volume = 1.0f
+                }
+                AudioChannelMode.RIGHT_ONLY -> {
+                    p.volume = 1.0f
+                }
+                else -> {
+                    p.volume = 1.0f
+                }
+            }
+        }
+    }
+
+    fun getCurrentChannelMode(): AudioChannelMode = currentChannelMode
+
+    fun getChannelModeDescription(): String {
+        return when (currentChannelMode) {
+            AudioChannelMode.STEREO -> "Stereo (เสียงเต็ม)"
+            AudioChannelMode.LEFT_ONLY -> "Left Channel"
+            AudioChannelMode.RIGHT_ONLY -> "Right Channel"
+            AudioChannelMode.MONO_MIX -> "Mono Mix"
+            AudioChannelMode.VOCAL_REMOVER -> "Vocal Remover"
+        }
+    }
 
     fun releasePlayer() {
         player?.release()

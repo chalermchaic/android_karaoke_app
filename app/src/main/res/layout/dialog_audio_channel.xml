@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1A1A1A">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Audio Channel"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:background="#333333" />
+
+    <RadioGroup
+        android:id="@+id/rg_channel_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <RadioButton
+            android:id="@+id/rb_stereo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stereo"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="10dp"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/rb_left_only"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Left Channel"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+        <RadioButton
+            android:id="@+id/rb_right_only"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Right Channel"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+        <RadioButton
+            android:id="@+id/rb_mono_mix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mono Mix"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+        <RadioButton
+            android:id="@+id/rb_vocal_remove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vocal Remover"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:padding="10dp" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textSize="14sp"
+        android:layout_margin="12dp"
+        android:backgroundTint="#666666" />
+
+</LinearLayout>
